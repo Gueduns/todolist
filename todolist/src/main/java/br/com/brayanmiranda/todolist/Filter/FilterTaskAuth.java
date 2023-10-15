@@ -25,7 +25,7 @@ public class FilterTaskAuth extends OncePerRequestFilter{
         throws ServletException, IOException {
       
             var serveltPath = request.getServletPath();
-            if(serveltPath.equals("/tasks/")){
+            if(serveltPath.startsWith("/tasks/")){
                 //Pegar a autenticação (usuario e senha )
                     var authorization = request.getHeader("Authorization");
                     //Eu quero que vc pegue a palavra basic tire e tire os espaços .trim()
@@ -50,6 +50,8 @@ public class FilterTaskAuth extends OncePerRequestFilter{
                     var passwordVerify = BCrypt.verifyer().verify(password.toCharArray(),user.getPassword());
                     //Converte para uma variavel booleana 
                     if (passwordVerify.verified){
+
+                        request.setAttribute("idUser", user.getId());
                         //Segue viagem
                         filterChain.doFilter(request,response);
                     }else{
